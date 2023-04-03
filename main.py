@@ -29,7 +29,7 @@ def ask_coordinates():
     Retour :
     (int(x), int(y)) (tuple) : tuple contenant les coordonnées X et Y du bonbon
     """
-    x, y = input("Coordonnée X : "), input("Coordonnées Y : ")
+    x, y = input("Numéro de ligne : "), input("Numéro de colonne : ")
     return int(x), int(y)
 
 
@@ -44,7 +44,8 @@ def swap(grid):
     candy_2 = ask_coordinates()
 
     # Échange des deux bonbons dans la grille de jeu
-    grid[candy_1[0]][candy_1[1]], grid[candy_2[0]][candy_2[1]] = grid[candy_2[0]][candy_2[1]], grid[candy_1[0]][candy_1[1]]
+    grid[candy_1[0]][candy_1[1]], grid[candy_2[0]][candy_2[1]] = grid[candy_2[0]][candy_2[1]], grid[candy_1[0]][
+        candy_1[1]]
 
 
 def detecte_coordonnes_vertical(grid, x, y, size):
@@ -61,8 +62,8 @@ def detecte_coordonnes_vertical(grid, x, y, size):
     [(x, y), (x+1, y), (x-1, y)] (list) : liste comprenant les coordonnées des bonbons faisant partie de la combinaison
     """
     # Vérification de l'existence d'une combinaison verticale de 3 bonbons
-    if x-1 >= 0 and x+1 < size and grid[x][y] == grid[x+1][y] and grid[x][y] == grid[x-1][y]:
-        return [(x, y), (x+1, y), (x-1, y)]
+    if x - 1 >= 0 and x + 1 < size and grid[x][y] == grid[x + 1][y] and grid[x][y] == grid[x - 1][y]:
+        return [(x, y), (x + 1, y), (x - 1, y)]
     else:
         return []
 
@@ -81,8 +82,8 @@ def detecte_coordonnes_horizontal(grid, x, y, size):
     [(x, y), (x, y+1), (x, y-1)] (list) : liste comprenant les coordonnées des bonbons faisant partie de la combinaison
     """
     # Vérification de l'existence d'une combinaison horizontale de 3 bonbons
-    if y-1 >= 0 and y+1 < size and grid[x][y] == grid[x][y+1] and grid[x][y] == grid[x][y-1]:
-        return [(x, y), (x, y+1), (x, y-1)]
+    if y - 1 >= 0 and y + 1 < size and grid[x][y] == grid[x][y + 1] and grid[x][y] == grid[x][y - 1]:
+        return [(x, y), (x, y + 1), (x, y - 1)]
     else:
         return []
 
@@ -152,14 +153,13 @@ def gravite(grid, size):
         changement = 0
 
         # On parcourt tous les bonbons jusqu'à l'avant dernière ligne
-        for i in range(size-1):
+        for i in range(size - 1):
             for j in range(size):
 
                 # Pour chaque bonbon ayant un bonbon supprimé (-1) en dessous, on le fait descendre
-                if grid[i][j] != -1 and grid[i+1][j] == -1:
-
+                if grid[i][j] != -1 and grid[i + 1][j] == -1:
                     # Échange des bonbons
-                    grid[i][j], grid[i+1][j] = grid[i+1][j], grid[i][j]
+                    grid[i][j], grid[i + 1][j] = grid[i + 1][j], grid[i][j]
                     changement += 1
         if changement == 0:
             change = False
@@ -191,19 +191,55 @@ def affichage_grille(grid, nb_type_bonbons):
     grid (list) : grille de jeu
     nb_type_bonbons (int) : nombre de couleurs de bonbons différentes
     """
-    plt.imshow(grid, vmin=0, vmax=nb_type_bonbons-1, cmap='jet')
+    plt.imshow(grid, vmin=0, vmax=nb_type_bonbons - 1, cmap='jet')
     plt.pause(0.1)
     plt.draw()
     plt.pause(0.1)
 
 
+def test_detecte_coordonnees_combinaison():
+    """
+    Teste la fonction detecte_coordonnees_combinaison(grille, i, j).
+    Pour chaque cas de test, affiche True si le test passe,
+    False sinon
+    """
+    # Test 1: Pas de combinaison
+    grille = [[0, 3, 2, 1, 1], [3, 1, 2, 3, 3], [0, 3, 3, 0, 1], [3, 3, 1, 0, 2], [0, 1, 0, 3, 3]]
+    size = 5
+    i = 2
+    j = 4
+    print(detecte_coordonnees_combinaison(grille, i, j, size) == [])
+
+    # Test 2: Combinaison horizontale de 3 bonbons
+    grille = [[0, 3, 2, 1, 1], [3, 1, 2, 3, 3], [3, 3, 3, 0, 1], [0, 3, 1, 0, 2], [0, 1, 0, 3, 3]]
+    size = 5
+    i = 2
+    j = 1
+    print(detecte_coordonnees_combinaison(grille, i, j, size) == [(2, 1), (2, 2), (2, 0)])
+
+    # Test 3 : Combinaison verticale de 3 bonbons
+    grille = [[0, 2, 2, 1, 1], [3, 2, 2, 3, 3], [3, 2, 3, 0, 1], [0, 4, 1, 0, 2], [0, 2, 1, 3, 3]]
+    size = 5
+    i = 1
+    j = 1
+    print(detecte_coordonnees_combinaison(grille, i, j, size) == [(1, 1), (2, 1), (0, 1)])
+
+    # Test 4 : Combinaison verticale + horizontale
+    grille = [[0, 2, 2, 1, 1], [3, 2, 2, 3, 3], [3, 2, 3, 0, 1], [0, 4, 1, 0, 2], [0, 2, 1, 3, 3]]
+    size = 5
+    i = 1
+    j = 1
+    print(detecte_coordonnees_combinaison(grille, i, j, size) == [(1, 1), (2, 1), (0, 1)])
+
+
 # Choix des paramètres de jeu
-size = 4
+size = 5
 colors = [0, 1, 2, 3]
 grid = generate_grid(size, colors)
 gagne = False
 
 # Programme principal
+test_detecte_coordonnees_combinaison()
 while not gagne:
     affichage_grille(grid, len(colors))
     while delete(grid, size):
