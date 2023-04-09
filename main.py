@@ -138,6 +138,9 @@ def delete(grid, size):
     # La variable "deleted" permet de savoir si toutes les combinaisons ont été supprimées
     deleted = False
 
+    # La liste "toutes_combinaisons" contient l'ensemble des bonbons faisant partie d'une combinaison
+    toutes_combinaisons = []
+
     # On parcourt tous les bonbons de la grille
     for x in range(size):
         for y in range(size):
@@ -145,12 +148,33 @@ def delete(grid, size):
             # Pour chaque bonbon, on récupère les coordonnées des combinaisons possibles
             combinaison = detecte_coordonnees_combinaison(grid, x, y, size)
 
-            # On assigne la valeur -1 à chaque bonbon faisant partie d'une combinaison
-            for i in combinaison:
-                if grid[i[0]][i[1]] != -1:
-                    grid[i[0]][i[1]] = -1
-                    deleted = True
-                    score += 1
+            # On ajoute ces coordonnées à la liste comportant l'ensemble des combinaisons
+            toutes_combinaisons.append(combinaison)
+
+    # On assigne la valeur -1 à chaque bonbon faisant partie d'une combinaison
+    for i in toutes_combinaisons:
+        for j in i:
+            print(i)
+
+            # On ajoute tous les bonbons de même valeur qui sont voisins d’un bonbons supprimé à la liste des bonbons à supprimer (niveau 3)
+            if j[0]+1 < size and grid[j[0]+1][j[1]] == grid[j[0]][j[1]] and grid[j[0]+1][j[1]] != -1:
+                i.append((j[0]+1, j[1]))
+                print(i)
+            if j[0]-1 >= 0 and grid[j[0]-1][j[1]] == grid[j[0]][j[1]] and grid[j[0]-1][j[1]] != -1:
+                i.append((j[0]-1, j[1]))
+                print(i)
+            if j[1]+1 < size and grid[j[0]][j[1]+1] == grid[j[0]][j[1]] and grid[j[0]][j[1]+1] != -1:
+                i.append((j[0], j[1]+1))
+                print(i)
+            if j[1]-1 >= 0 and grid[j[0]][j[1]-1] == grid[j[0]][j[1]] and grid[j[0]][j[1]-1] != -1:
+                i.append((j[0], j[1]-1))
+                print(i)
+
+            # On assigne -1 à la valeur du bonbon supprimé
+            if grid[j[0]][j[1]] != -1:
+                grid[j[0]][j[1]] = -1
+                deleted = True
+                score += 1
     return deleted
 
 
@@ -303,7 +327,7 @@ def test_detecte_coordonnees_combinaison():
 # Choix des paramètres de jeu
 size = int(input("Avec quelle taille de grille voulez-vous jouer ? (entier naturel) "))
 colors = [0, 1, 2, 3]
-grid = generate_grid(size, colors)
+grid = [[2, 2, 2, 2, 2], [3, 2, 0, 3, 3], [3, 2, 3, 0, 1], [0, 2, 1, 0, 2], [0, 2, 2, 3, 3]]#generate_grid(size, colors)
 score = 0
 gagne = False
 
