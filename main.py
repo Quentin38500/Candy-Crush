@@ -30,7 +30,7 @@ def ask_coordinates():
     Retour :
     (int(x), int(y)) (tuple) : tuple contenant les coordonnées X et Y du bonbon
     """
-    x, y = input(f"Numéro de ligne : (entre 0 et {size - 1}) "), input(f"Numéro de colonne : (entre 0 et {size - 1}) ")
+    x, y = input(f"Numéro de ligne (entre 0 et {size - 1}) : "), input(f"Numéro de colonne (entre 0 et {size - 1}) : ")
     return int(x), int(y)
 
 
@@ -54,35 +54,19 @@ def swap(grid):
         grid_copy[candy_1[0]][candy_1[1]], grid_copy[candy_2[0]][candy_2[1]] = grid_copy[candy_2[0]][candy_2[1]], \
                                                                                grid_copy[candy_1[0]][candy_1[1]]
 
-        # Échange des deux bonbons dans la grille de jeu
         # On vérifie que les bonbons sont bien adjacents
-        if not ((candy_1[0] == candy_2[0] + 1 and candy_1[1] == candy_2[1]) or (
-                candy_1[0] == candy_2[0] - 1 and candy_1[1] == candy_2[1]) or (
-                        candy_1[1] == candy_2[1] + 1 and candy_1[0] == candy_2[0]) or (
-                        candy_1[1] == candy_2[1] - 1 and candy_1[0] == candy_2[0])):
+        if not ((candy_1[0] == candy_2[0] + 1 and candy_1[1] == candy_2[1]) or
+                (candy_1[0] == candy_2[0] - 1 and candy_1[1] == candy_2[1]) or
+                (candy_1[1] == candy_2[1] + 1 and candy_1[0] == candy_2[0]) or
+                (candy_1[1] == candy_2[1] - 1 and candy_1[0] == candy_2[0])):
             print("Ce déplacement n'est pas possible car les bonbons ne sont pas adjacents")
 
         # On vérifie que l'échange amène bien à une combinaison
-        elif (not detecte_coordonnees_combinaison(grid_copy, candy_1[0], candy_1[1],
-                                                  size) and not detecte_coordonnees_combinaison(grid_copy,
-                                                                                                candy_1[0] - 1,
-                                                                                                candy_1[1],
-                                                                                                size) and not detecte_coordonnees_combinaison(
-            grid_copy, candy_1[0] + 1, candy_1[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_1[0],
-                                                                                                 candy_1[1] - 1,
-                                                                                                 size) and not detecte_coordonnees_combinaison(
-            grid_copy, candy_1[0], candy_1[1] + 1, size)) and (
-                not detecte_coordonnees_combinaison(grid_copy, candy_2[0], candy_2[1],
-                                                    size) and not detecte_coordonnees_combinaison(grid_copy,
-                                                                                                  candy_2[0] - 1,
-                                                                                                  candy_2[1],
-                                                                                                  size) and not detecte_coordonnees_combinaison(
-            grid_copy, candy_2[0] + 1, candy_2[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_2[0],
-                                                                                                 candy_2[1] - 1,
-                                                                                                 size) and not detecte_coordonnees_combinaison(
-            grid_copy, candy_2[0], candy_2[1] + 1, size)):
+        elif not delete(grid_copy, size):
             print("Ce déplacement n'est pas possible car il n'amène pas à une combinaison")
         else:
+
+            # On échange les deux bonbons
             grid[candy_1[0]][candy_1[1]], grid[candy_2[0]][candy_2[1]] = grid[candy_2[0]][candy_2[1]], grid[candy_1[0]][
                 candy_1[1]]
     else:
