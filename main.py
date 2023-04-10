@@ -30,7 +30,7 @@ def ask_coordinates():
     Retour :
     (int(x), int(y)) (tuple) : tuple contenant les coordonnées X et Y du bonbon
     """
-    x, y = input("Numéro de ligne : "), input("Numéro de colonne : ")
+    x, y = input(f"Numéro de ligne : (entre 0 et {size - 1}) "), input(f"Numéro de colonne : (entre 0 et {size - 1}) ")
     return int(x), int(y)
 
 
@@ -47,19 +47,46 @@ def swap(grid):
     # On créé une copie de la liste afin de vérifier que l'échange amène bien à une combinaison
     grid_copy = copy.deepcopy(grid)
 
-    # On simule l'échange des bonbons dans la copie de la liste
-    grid_copy[candy_1[0]][candy_1[1]], grid_copy[candy_2[0]][candy_2[1]] = grid_copy[candy_2[0]][candy_2[1]], grid_copy[candy_1[0]][candy_1[1]]
+    # On vérfie que les coordonnées données sont valides
+    if 0 <= candy_1[0] < size and 0 <= candy_1[1] < size and 0 <= candy_2[0] < size and 0 <= candy_2[1] < size:
 
-    # Échange des deux bonbons dans la grille de jeu
-    # On vérifie que les bonbons sont bien adjacents
-    if not ((candy_1[0] == candy_2[0] + 1 and candy_1[1] == candy_2[1]) or (candy_1[0] == candy_2[0] - 1 and candy_1[1] == candy_2[1]) or (candy_1[1] == candy_2[1] + 1 and candy_1[0] == candy_2[0]) or (candy_1[1] == candy_2[1] - 1 and candy_1[0] == candy_2[0])):
-        print("Ce déplacement n'est pas possible car les bonbons ne sont pas adjacents")
+        # On simule l'échange des bonbons dans la copie de la liste
+        grid_copy[candy_1[0]][candy_1[1]], grid_copy[candy_2[0]][candy_2[1]] = grid_copy[candy_2[0]][candy_2[1]], \
+                                                                               grid_copy[candy_1[0]][candy_1[1]]
 
-    # On vérifie que l'échange amène bien à une combinaison
-    elif (not detecte_coordonnees_combinaison(grid_copy, candy_1[0], candy_1[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_1[0]-1, candy_1[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_1[0]+1, candy_1[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_1[0], candy_1[1]-1, size) and not detecte_coordonnees_combinaison(grid_copy, candy_1[0], candy_1[1]+1, size)) and (not detecte_coordonnees_combinaison(grid_copy, candy_2[0], candy_2[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_2[0]-1, candy_2[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_2[0]+1, candy_2[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_2[0], candy_2[1]-1, size) and not detecte_coordonnees_combinaison(grid_copy, candy_2[0], candy_2[1]+1, size)):
-        print("Ce déplacement n'est pas possible car il n'amène pas à une combinaison")
+        # Échange des deux bonbons dans la grille de jeu
+        # On vérifie que les bonbons sont bien adjacents
+        if not ((candy_1[0] == candy_2[0] + 1 and candy_1[1] == candy_2[1]) or (
+                candy_1[0] == candy_2[0] - 1 and candy_1[1] == candy_2[1]) or (
+                        candy_1[1] == candy_2[1] + 1 and candy_1[0] == candy_2[0]) or (
+                        candy_1[1] == candy_2[1] - 1 and candy_1[0] == candy_2[0])):
+            print("Ce déplacement n'est pas possible car les bonbons ne sont pas adjacents")
+
+        # On vérifie que l'échange amène bien à une combinaison
+        elif (not detecte_coordonnees_combinaison(grid_copy, candy_1[0], candy_1[1],
+                                                  size) and not detecte_coordonnees_combinaison(grid_copy,
+                                                                                                candy_1[0] - 1,
+                                                                                                candy_1[1],
+                                                                                                size) and not detecte_coordonnees_combinaison(
+            grid_copy, candy_1[0] + 1, candy_1[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_1[0],
+                                                                                                 candy_1[1] - 1,
+                                                                                                 size) and not detecte_coordonnees_combinaison(
+            grid_copy, candy_1[0], candy_1[1] + 1, size)) and (
+                not detecte_coordonnees_combinaison(grid_copy, candy_2[0], candy_2[1],
+                                                    size) and not detecte_coordonnees_combinaison(grid_copy,
+                                                                                                  candy_2[0] - 1,
+                                                                                                  candy_2[1],
+                                                                                                  size) and not detecte_coordonnees_combinaison(
+            grid_copy, candy_2[0] + 1, candy_2[1], size) and not detecte_coordonnees_combinaison(grid_copy, candy_2[0],
+                                                                                                 candy_2[1] - 1,
+                                                                                                 size) and not detecte_coordonnees_combinaison(
+            grid_copy, candy_2[0], candy_2[1] + 1, size)):
+            print("Ce déplacement n'est pas possible car il n'amène pas à une combinaison")
+        else:
+            grid[candy_1[0]][candy_1[1]], grid[candy_2[0]][candy_2[1]] = grid[candy_2[0]][candy_2[1]], grid[candy_1[0]][
+                candy_1[1]]
     else:
-        grid[candy_1[0]][candy_1[1]], grid[candy_2[0]][candy_2[1]] = grid[candy_2[0]][candy_2[1]], grid[candy_1[0]][candy_1[1]]
+        print(f"Les coordonnées ne sont pas valides (entre 0 et {size - 1}) !")
 
 
 def detecte_coordonnes_vertical(grid, x, y, size):
@@ -76,7 +103,8 @@ def detecte_coordonnes_vertical(grid, x, y, size):
     [(x, y), (x+1, y), (x-1, y)] (list) : liste comprenant les coordonnées des bonbons faisant partie de la combinaison
     """
     # Vérification de l'existence d'une combinaison verticale de 3 bonbons
-    if 0 <= x < size and x - 1 >= 0 and x + 1 < size and grid[x][y] == grid[x + 1][y] and grid[x][y] == grid[x - 1][y]:
+    if 0 <= x < size and 0 <= y < size and x - 1 >= 0 and x + 1 < size and grid[x][y] == grid[x + 1][y] and grid[x][
+        y] == grid[x - 1][y]:
         return [(x, y), (x + 1, y), (x - 1, y)]
     else:
         return []
@@ -96,7 +124,8 @@ def detecte_coordonnes_horizontal(grid, x, y, size):
     [(x, y), (x, y+1), (x, y-1)] (list) : liste comprenant les coordonnées des bonbons faisant partie de la combinaison
     """
     # Vérification de l'existence d'une combinaison horizontale de 3 bonbons
-    if 0 <= x < size and y - 1 >= 0 and y + 1 < size and grid[x][y] == grid[x][y + 1] and grid[x][y] == grid[x][y - 1]:
+    if 0 <= x < size and 0 <= y < size and y - 1 >= 0 and y + 1 < size and grid[x][y] == grid[x][y + 1] and grid[x][
+        y] == grid[x][y - 1]:
         return [(x, y), (x, y + 1), (x, y - 1)]
     else:
         return []
@@ -144,7 +173,6 @@ def delete(grid, size):
     # On parcourt tous les bonbons de la grille
     for x in range(size):
         for y in range(size):
-
             # Pour chaque bonbon, on récupère les coordonnées des combinaisons possibles
             combinaison = detecte_coordonnees_combinaison(grid, x, y, size)
 
@@ -154,21 +182,16 @@ def delete(grid, size):
     # On assigne la valeur -1 à chaque bonbon faisant partie d'une combinaison
     for i in toutes_combinaisons:
         for j in i:
-            print(i)
 
             # On ajoute tous les bonbons de même valeur qui sont voisins d’un bonbons supprimé à la liste des bonbons à supprimer (niveau 3)
-            if j[0]+1 < size and grid[j[0]+1][j[1]] == grid[j[0]][j[1]] and grid[j[0]+1][j[1]] != -1:
-                i.append((j[0]+1, j[1]))
-                print(i)
-            if j[0]-1 >= 0 and grid[j[0]-1][j[1]] == grid[j[0]][j[1]] and grid[j[0]-1][j[1]] != -1:
-                i.append((j[0]-1, j[1]))
-                print(i)
-            if j[1]+1 < size and grid[j[0]][j[1]+1] == grid[j[0]][j[1]] and grid[j[0]][j[1]+1] != -1:
-                i.append((j[0], j[1]+1))
-                print(i)
-            if j[1]-1 >= 0 and grid[j[0]][j[1]-1] == grid[j[0]][j[1]] and grid[j[0]][j[1]-1] != -1:
-                i.append((j[0], j[1]-1))
-                print(i)
+            if j[0] + 1 < size and grid[j[0] + 1][j[1]] == grid[j[0]][j[1]] and grid[j[0] + 1][j[1]] != -1:
+                i.append((j[0] + 1, j[1]))
+            if j[0] - 1 >= 0 and grid[j[0] - 1][j[1]] == grid[j[0]][j[1]] and grid[j[0] - 1][j[1]] != -1:
+                i.append((j[0] - 1, j[1]))
+            if j[1] + 1 < size and grid[j[0]][j[1] + 1] == grid[j[0]][j[1]] and grid[j[0]][j[1] + 1] != -1:
+                i.append((j[0], j[1] + 1))
+            if j[1] - 1 >= 0 and grid[j[0]][j[1] - 1] == grid[j[0]][j[1]] and grid[j[0]][j[1] - 1] != -1:
+                i.append((j[0], j[1] - 1))
 
             # On assigne -1 à la valeur du bonbon supprimé
             if grid[j[0]][j[1]] != -1:
@@ -232,7 +255,7 @@ def affichage_grille(grid, nb_type_bonbons):
     grid (list) : grille de jeu
     nb_type_bonbons (int) : nombre de couleurs de bonbons différentes
     """
-    plt.imshow(grid, vmin=0, vmax=nb_type_bonbons - 1, cmap='jet')
+    plt.imshow(grid, vmin=0, vmax=nb_type_bonbons - 1, cmap="jet")
     plt.pause(0.1)
     plt.draw()
     plt.pause(0.1)
@@ -251,16 +274,17 @@ def end(grid, size):
     """
     # On parcourt tous les bonbons de la liste
     for i in range(size):
-        for j in range(size-1):
+        for j in range(size - 1):
 
             # On créé une copie de la liste afin de ne pas la modifier
             grid_copy = copy.deepcopy(grid)
 
             # On simule l'échange horizontal de deux bonbons
             candy_1 = (i, j)
-            candy_2 = (i, j+1)
-            grid_copy[candy_1[0]][candy_1[1]], grid_copy[candy_2[0]][candy_2[1]] = grid_copy[candy_2[0]][candy_2[1]], grid_copy[candy_1[0]][
-                candy_1[1]]
+            candy_2 = (i, j + 1)
+            grid_copy[candy_1[0]][candy_1[1]], grid_copy[candy_2[0]][candy_2[1]] = grid_copy[candy_2[0]][candy_2[1]], \
+                                                                                   grid_copy[candy_1[0]][
+                                                                                       candy_1[1]]
 
             # On parcourt la grille afin de vérifier s'il reste des combinaisons possibles avec l'échange effectué précédemment
             for x in range(size):
@@ -274,12 +298,13 @@ def end(grid, size):
 
     # On répéte le même algorithme pour l'échange vertical
     for j in range(size):
-        for i in range(size-1):
+        for i in range(size - 1):
             grid_copy = copy.deepcopy(grid)
             candy_1 = (i, j)
-            candy_2 = (i+1, j)
-            grid_copy[candy_1[0]][candy_1[1]], grid_copy[candy_2[0]][candy_2[1]] = grid_copy[candy_2[0]][candy_2[1]], grid_copy[candy_1[0]][
-                candy_1[1]]
+            candy_2 = (i + 1, j)
+            grid_copy[candy_1[0]][candy_1[1]], grid_copy[candy_2[0]][candy_2[1]] = grid_copy[candy_2[0]][candy_2[1]], \
+                                                                                   grid_copy[candy_1[0]][
+                                                                                       candy_1[1]]
             for x in range(size):
                 for y in range(size):
                     combinaison = detecte_coordonnees_combinaison(grid_copy, x, y, size)
@@ -326,8 +351,8 @@ def test_detecte_coordonnees_combinaison():
 
 # Choix des paramètres de jeu
 size = int(input("Avec quelle taille de grille voulez-vous jouer ? (entier naturel) "))
-colors = [0, 1, 2, 3]
-grid = [[2, 2, 2, 2, 2], [3, 2, 0, 3, 3], [3, 2, 3, 0, 1], [0, 2, 1, 0, 2], [0, 2, 2, 3, 3]]#generate_grid(size, colors)
+colors = [0, 1, 2, 3, 4]
+grid = generate_grid(size, colors)
 score = 0
 gagne = False
 
@@ -344,7 +369,6 @@ while not gagne:
 
     # Tant qu'il reste des bonbons à supprimer (la fonction delete leur assigne la valeur -1 et renvoie True s'il en reste encore à supprimer)
     while delete(grid, size):
-
         # Application de la gravité
         gravite(grid, size)
 
